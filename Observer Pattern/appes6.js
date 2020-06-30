@@ -18,8 +18,6 @@ class EventObservers {
   }
 
   fire(){
-    
-
     this.observers.forEach(function(item){
       item.call();
     });
@@ -33,6 +31,8 @@ class EventObservers {
 const click = new EventObservers();
 
 // Event listners
+
+// Event listners for subscribing
 document.querySelector('.sub-ms').addEventListener('click', 
   function() {
     click.subscribe(getCurMilliseconds);
@@ -48,6 +48,7 @@ document.querySelector('.sub-m').addEventListener('click',
     click.subscribe(getCurMins);
 });
 
+// event listners for unsubscribing
 document.querySelector('.unsub-ms').addEventListener('click', 
   function() {
     click.unsubscribe(getCurMilliseconds);
@@ -63,6 +64,7 @@ document.querySelector('.unsub-m').addEventListener('click',
     click.unsubscribe(getCurMins);
 });
 
+// event listner for fire
 document.querySelector('.fire').addEventListener('click', 
   function() {
     click.fire();
