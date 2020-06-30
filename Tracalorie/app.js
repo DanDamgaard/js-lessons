@@ -12,9 +12,9 @@ const ItemCtrl = (function(){
   // Data structure / State
   const data = {
     items: [
-      {id: 1, name: 'stake', price: 210},
-      {id: 2, name: 'cookie', price: 10},
-      {id: 3, name: 'eggs', price: 20}
+      // {id: 1, name: 'stake', price: 210},
+      // {id: 2, name: 'cookie', price: 10},
+      // {id: 3, name: 'eggs', price: 20}
     ], 
     currentItem: null,
     totalPrice: 0
@@ -82,6 +82,29 @@ const UICtrl = (function(){
           price:document.querySelector(UISelectors.itemPriceInput).value
         }
       },
+      addListItem: function(item){
+        //show list
+        document.querySelector(UISelectors.itemList).style.display = 'block';  
+
+        //Create li element
+        const li = document.createElement('li');
+        // Add class
+        li.className = 'collection-item';
+        // Add id
+        li.id = `item-${item.id}`;
+        // Add html
+        li.innerHTML = `<Strong>${item.name}</Strong> <em>${item.price} Kr</em>
+        <a href="#" class="secondary-ceontent"><i class="edit-item fa fa-pencil"></i></a>`;
+        // insert item
+        document.querySelector(UISelectors.itemList).insertAdjacentElement('beforeend', li)
+      },
+      clearInput: function(){
+        document.querySelector(UISelectors.itemNameInput).value = '';
+        document.querySelector(UISelectors.itemPriceInput).value = '';
+      },
+      hideList: function(){
+        document.querySelector(UISelectors.itemList).style.display = 'none';
+      },
       getSelectors: function(){
         return UISelectors;
       }
@@ -113,7 +136,12 @@ const App = (function(ItemCtrl, UICtrl){
     if(input.name !== '' && input.price !== ''){
       // Add item
       const newItem = ItemCtrl.addItem(input.name, input.price);
-      console.log(input.name);
+
+      // Add item to UI List
+      UICtrl.addListItem(newItem);
+
+      //clear fields
+      UICtrl.clearInput();
     }
 
     e.preventDefault();
@@ -125,9 +153,16 @@ const App = (function(ItemCtrl, UICtrl){
       console.log('init app');
       // get items items from data stucture
       const items = ItemCtrl.getItems();
+
+      //check if any items
+      if(items.length === 0){
+        UICtrl.hideList();
+      } else {
+        //populate list with items
+        UICtrl.populateItemList(items);
+      }
       
-      //populate list with items
-      UICtrl.populateItemList(items);
+      
 
       //Load event listners
       loadEventListners();
