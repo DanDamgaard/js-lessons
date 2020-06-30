@@ -44,6 +44,18 @@ const ItemCtrl = (function(){
 
       return newItem;
     },
+    getTotalPrice: function(){
+      let total = 0;
+      data.items.forEach(function(item){
+        total += item.price;
+      })
+
+      // Set total price in data structure
+      data.totalPrice = total;
+
+      // return total
+      return data.totalPrice;
+    },
     logData: function(){
       return data;
     }
@@ -59,7 +71,8 @@ const UICtrl = (function(){
     itemList: '#item-list',
     addBtn: '.add-btn',
     itemNameInput: '#item-name',
-    itemPriceInput: '#item-price'
+    itemPriceInput: '#item-price',
+    totalPrice: '.total-price'
   }
   //public methods
   return {
@@ -94,7 +107,7 @@ const UICtrl = (function(){
         li.id = `item-${item.id}`;
         // Add html
         li.innerHTML = `<Strong>${item.name}</Strong> <em>${item.price} Kr</em>
-        <a href="#" class="secondary-ceontent"><i class="edit-item fa fa-pencil"></i></a>`;
+        <a href="#" class="secondary-content"><i class="edit-item fa fa-pencil"></i></a>`;
         // insert item
         document.querySelector(UISelectors.itemList).insertAdjacentElement('beforeend', li)
       },
@@ -104,6 +117,9 @@ const UICtrl = (function(){
       },
       hideList: function(){
         document.querySelector(UISelectors.itemList).style.display = 'none';
+      },
+      showTotalPrice: function(totalprice){
+        document.querySelector(UISelectors.totalPrice).textContent = totalprice;
       },
       getSelectors: function(){
         return UISelectors;
@@ -140,6 +156,12 @@ const App = (function(ItemCtrl, UICtrl){
       // Add item to UI List
       UICtrl.addListItem(newItem);
 
+      // get the total price
+      const totalprice = ItemCtrl.getTotalPrice();
+
+      // Add total price to UI
+      UICtrl.showTotalPrice(totalprice);
+
       //clear fields
       UICtrl.clearInput();
     }
@@ -162,6 +184,11 @@ const App = (function(ItemCtrl, UICtrl){
         UICtrl.populateItemList(items);
       }
       
+      // get the total price
+      const totalprice = ItemCtrl.getTotalPrice();
+
+      // Add total price to UI
+      UICtrl.showTotalPrice(totalprice);
       
 
       //Load event listners
