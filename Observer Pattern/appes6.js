@@ -18,12 +18,16 @@ class EventObservers {
   }
 
   fire(){
+    
+
     this.observers.forEach(function(item){
       item.call();
     });
+    
   }
 
 }
+
 
 
 const click = new EventObservers();
@@ -39,6 +43,11 @@ document.querySelector('.sub-s').addEventListener('click',
     click.subscribe(getCurSeconds);
 });
 
+document.querySelector('.sub-m').addEventListener('click', 
+  function() {
+    click.subscribe(getCurMins);
+});
+
 document.querySelector('.unsub-ms').addEventListener('click', 
   function() {
     click.unsubscribe(getCurMilliseconds);
@@ -49,6 +58,11 @@ document.querySelector('.unsub-s').addEventListener('click',
     click.unsubscribe(getCurSeconds);
 });
 
+document.querySelector('.unsub-m').addEventListener('click', 
+  function() {
+    click.unsubscribe(getCurMins);
+});
+
 document.querySelector('.fire').addEventListener('click', 
   function() {
     click.fire();
@@ -56,9 +70,24 @@ document.querySelector('.fire').addEventListener('click',
 
 //click handler
 const getCurMilliseconds = function() {
-  console.log(`Current Millieseconds: ${new Date().getMilliseconds()}`);
+  const times = document.getElementById('times');
+  const row = document.createElement('tr');
+  row.innerHTML = `<br><br><td>Current Millieseconds: ${new Date().getMilliseconds()}</td>`;
+  times.appendChild(row);
 }
 
 const getCurSeconds = function() {
-  console.log(`Current Seconds: ${new Date().getSeconds()}`);
+  const times = document.getElementById('times');
+  const row = document.createElement('tr');
+
+  row.innerHTML= `<br><br><td>Current Seconds: ${new Date().getSeconds()}</td>`;
+  times.appendChild(row);
+}
+
+const getCurMins = function() {
+  const times = document.getElementById('times');
+  const row = document.createElement('tr');
+
+  row.innerHTML= `<br><br><td>Current Minutes: ${new Date().getMinutes()}</td>`;
+  times.appendChild(row);
 }
