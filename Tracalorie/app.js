@@ -69,6 +69,20 @@ const ItemCtrl = (function(){
       });
       return found;
     },
+
+    delteItem:function(id){
+
+      // Get ids
+      const ids = data.items.map(function(item){
+        return item.id;
+      });
+
+      // get index
+      const index = ids.indexOf(id);
+
+      // Remove item
+      data.items.splice(index,1);
+    },
     setCurrentItem: function(item){
       data.currentItem = item;
     },
@@ -175,13 +189,15 @@ const UICtrl = (function(){
       showTotalPrice: function(totalprice){
         document.querySelector(UISelectors.totalPrice).textContent = totalprice;
       },
-      clearEditState: function(){
+      clearEditState: function(e){
         UICtrl.clearInput();
-
+        
         document.querySelector(UISelectors.addBtn).style.display = 'inline';
         document.querySelector(UISelectors.updateBtn).style.display = 'none';
         document.querySelector(UISelectors.deleteBtn).style.display = 'none';
         document.querySelector(UISelectors.backBtn).style.display = 'none';
+
+        
       },
       showEditState: function(){
         
@@ -226,6 +242,12 @@ const App = (function(ItemCtrl, UICtrl){
 
     // Update item event
     document.querySelector(UISelectors.updateBtn).addEventListener('click', itemUpdateSubmit);
+
+     // Delete item event
+     document.querySelector(UISelectors.deleteBtn).addEventListener('click', itemDeleteSubmit);
+
+    // Back button event
+    document.querySelector(UISelectors.backBtn).addEventListener('click', UICtrl.clearEditState);
   }
   
   //Add item submit
@@ -254,7 +276,7 @@ const App = (function(ItemCtrl, UICtrl){
     e.preventDefault();
   }
 
-  // update submit
+  // Update submit
   const itemEditClick = function (e){
     if(e.target.classList.contains('edit-item')){
       // get list item id
@@ -295,6 +317,18 @@ const App = (function(ItemCtrl, UICtrl){
      UICtrl.showTotalPrice(totalprice);
 
      UICtrl.clearEditState();
+
+    e.preventDefault();
+  }
+
+  // Delete button event
+  const itemDeleteSubmit = function(e){
+    
+    // get current item
+    const currentItem = ItemCtrl.getCurrentItem();
+
+    // Delete from data structure
+    ItemCtrl.deleteItem(currentItem.id);
 
     e.preventDefault();
   }
