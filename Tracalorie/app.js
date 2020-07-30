@@ -1,4 +1,40 @@
 // storage controller
+const StorageCtrl = (function(){
+  // Public methods 
+  return {
+    storeItem: function(item){
+      let items;
+      // check i any item in local storage
+      if(localStorage.getItem('items') === null){
+        items = [];
+        // Push new items
+        items.push(item);
+        // Set localStorage
+        localStorage.setItem('items', JSON.stringify(items));
+      } else {
+        // get what allready in localstoreage
+        items = JSON.parse(localStorage.getItem('items'));
+
+        // Push new item
+        items.push(item);
+
+        // re set localstoreage
+        localStorage.setItem('items', JSON.stringify(itmems));
+      }
+    },
+    getItemsFromStoreage: function(){
+      let items;
+      if(localStorage.getItem('items') === null){
+        items = [];
+      } else {
+        items = JSON.parse(localStorage.getItem('items'));
+      }
+      return items;
+    }
+  }
+
+})();
+
 
 //item controller 
 const ItemCtrl = (function(){
@@ -70,7 +106,7 @@ const ItemCtrl = (function(){
       return found;
     },
 
-    delteItem:function(id){
+    deleteItem:function(id){
 
       // Get ids
       const ids = data.items.map(function(item){
@@ -82,6 +118,11 @@ const ItemCtrl = (function(){
 
       // Remove item
       data.items.splice(index,1);
+    },
+
+    clearAllItems:function(){
+      data.items = [];
+      
     },
     setCurrentItem: function(item){
       data.currentItem = item;
@@ -119,6 +160,7 @@ const UICtrl = (function(){
     updateBtn: '.update-btn',
     deleteBtn: '.delete-btn',
     backBtn: '.back-btn',
+    clearBtn: '.cleat-btn',
     itemNameInput: '#item-name',
     itemPriceInput: '#item-price',
     totalPrice: '.total-price'
@@ -174,6 +216,12 @@ const UICtrl = (function(){
            }
         },)
       },
+
+      deleListItem:function(id){
+        const itemID = `#item-${id}`;
+        const item = document.querySelector(itemID);
+        item.remove();
+      },
       clearInput: function(){
         document.querySelector(UISelectors.itemNameInput).value = '';
         document.querySelector(UISelectors.itemPriceInput).value = '';
@@ -182,6 +230,16 @@ const UICtrl = (function(){
         document.querySelector(UISelectors.itemNameInput).value = ItemCtrl.getCurrentItem().name;
         document.querySelector(UISelectors.itemPriceInput).value = ItemCtrl.getCurrentItem().price;
         UICtrl.showEditState();
+      },
+      RemoveItems: function(){
+        let listItems = document.querySelectorAll(UISelectors.listItems);
+
+        // turn node list into array
+        listItems = Array.from(listItems);
+
+        listItems.forEach(function(item){
+          item.remove();
+        })
       },
       hideList: function(){
         document.querySelector(UISelectors.itemList).style.display = 'none';
@@ -220,7 +278,7 @@ const UICtrl = (function(){
 
 
 //app controller
-const App = (function(ItemCtrl, UICtrl){
+const App = (function(ItemCtrl, StorageCtrl, UICtrl){
   // Load event listners
   let loadEventListners = function(){
     // get UI Selectors
@@ -248,6 +306,9 @@ const App = (function(ItemCtrl, UICtrl){
 
     // Back button event
     document.querySelector(UISelectors.backBtn).addEventListener('click', UICtrl.clearEditState);
+
+    // Clear items event
+    document.querySelector(UISelectors.clearBtn).addEventListener('click', clearAllItemsClick);
   }
   
   //Add item submit
@@ -268,6 +329,9 @@ const App = (function(ItemCtrl, UICtrl){
 
       // Add total price to UI
       UICtrl.showTotalPrice(totalprice);
+
+      // STore in Localstorage
+      StorageCtrl.storeItem(newItem);
 
       //clear fields
       UICtrl.clearInput();
@@ -330,8 +394,39 @@ const App = (function(ItemCtrl, UICtrl){
     // Delete from data structure
     ItemCtrl.deleteItem(currentItem.id);
 
+    // Delete from UI
+    UICtrl.deleListItem(currentItem.id);
+
+    // get the total price
+    const totalprice = ItemCtrl.getTotalPrice();
+
+    // Add total price to UI
+    UICtrl.showTotalPrice(totalprice);
+
+    UICtrl.clearEditState();
+
     e.preventDefault();
   }
+
+  // Clear items event
+const clearAllItemsClick = function(){
+  // Delete all items data structure
+  ItemCtrl.clearAllItems();
+
+  // get the total price
+  const totalprice = ItemCtrl.getTotalPrice();
+
+  // Add total price to UI
+  UICtrl.showTotalPrice(totalprice);
+
+  // Remove from UI
+  UICtrl.RemoveItems();
+
+  // Hide UL
+  UICtrl.hideList();
+
+  
+}
 
   //public methods
   return {
@@ -362,7 +457,7 @@ const App = (function(ItemCtrl, UICtrl){
       loadEventListners();
     }
   }
-})(ItemCtrl, UICtrl);
+})(ItemCtrl, StorageCtrl, UICtrl);
 
 // init app
 App.init();
