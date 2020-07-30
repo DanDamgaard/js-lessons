@@ -40,6 +40,19 @@ const StorageCtrl = (function(){
         }
       });
       localStorage.setItem('items', JSON.stringify(items));
+    },
+    deleteItemFromStoreage: function(id){
+      let items = JSON.parse(localStorage.getItem('items'));
+
+      items.forEach(function(item, index){
+        if(id === item.id){
+          items.splice(index, 1);
+        }
+      });
+      localStorage.setItem('items', JSON.stringify(items));
+    },
+    clearItemFromStoreage: function(){
+      
     }
   }
 
@@ -411,6 +424,9 @@ const App = (function(ItemCtrl, StorageCtrl, UICtrl){
 
     // Add total price to UI
     UICtrl.showTotalPrice(totalprice);
+
+    // delete from localstoreage
+    StorageCtrl.deleteItemFromStoreage(currentItem.id);
 
     UICtrl.clearEditState();
 
