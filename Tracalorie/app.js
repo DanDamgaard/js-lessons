@@ -30,6 +30,16 @@ const StorageCtrl = (function(){
         items = JSON.parse(localStorage.getItem('items'));
       }
       return items;
+    },
+    updateItemStoreage: function(updatedItem){
+      let items = JSON.parse(localStorage.getItem('items'));
+
+      items.forEach(function(item, index){
+        if(updatedItem.id === item.id){
+          items.splice(index, 1 , updatedItem);
+        }
+      });
+      localStorage.setItem('items', JSON.stringify(items));
     }
   }
 
@@ -241,7 +251,7 @@ const UICtrl = (function(){
         document.querySelector(UISelectors.itemList).style.display = 'none';
       },
       showTotalPrice: function(totalprice){
-        document.querySelector(UISelectors.totalPrice).textContent = totalprice;
+        document.querySelector(UISelectors.totalPrice).textContent = totalprice + ' Kr';
       },
       clearEditState: function(e){
         UICtrl.clearInput();
@@ -375,6 +385,9 @@ const App = (function(ItemCtrl, StorageCtrl, UICtrl){
 
      // Add total price to UI
      UICtrl.showTotalPrice(totalprice);
+
+     // update localstorage
+     StorageCtrl.updateItemStoreage(updateItem);
 
      UICtrl.clearEditState();
 
