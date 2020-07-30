@@ -19,7 +19,7 @@ const StorageCtrl = (function(){
         items.push(item);
 
         // re set localstoreage
-        localStorage.setItem('items', JSON.stringify(itmems));
+        localStorage.setItem('items', JSON.stringify(items));
       }
     },
     getItemsFromStoreage: function(){
@@ -47,11 +47,7 @@ const ItemCtrl = (function(){
 
   // Data structure / State
   const data = {
-    items: [
-      // {id: 1, name: 'stake', price: 210},
-      // {id: 2, name: 'cookie', price: 10},
-      // {id: 3, name: 'eggs', price: 20}
-    ], 
+    items: StorageCtrl.getItemsFromStoreage(), 
     currentItem: null,
     totalPrice: 0
   }
@@ -173,7 +169,7 @@ const UICtrl = (function(){
         items.forEach(function(item){
           html += `<li class="collection-item" id="item-${item.id}">
           <Strong>${item.name}</Strong> <em>${item.price} Kr</em>
-          <a href="#" class="secondary-ceontent"><i class="edit-item fa fa-pencil"></i></a>
+          <a href="#" class="secondary-content"><i class="edit-item fa fa-pencil"></i></a>
         </li>`;
         });
 
